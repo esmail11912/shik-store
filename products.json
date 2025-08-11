@@ -1,0 +1,34 @@
+{
+  "products": [
+    {
+      "id": "p1",
+      "sku": "E-001",
+      "cat": "ebook",
+      "title": {
+        "fa": "ای‌بوک حرفه‌ای A",
+        "en": "Pro E‑book A"
+      },
+      "desc": {
+        "fa": "PDF — 120 صفحه",
+        "en": "PDF — 120 pages"
+      },
+      "price": 12.9,
+      "image": null
+    },
+    {
+      "id": "p2",
+      "sku": "S-002",
+      "cat": "software",
+      "title": {
+        "fa": "نرم‌افزار کاربردی B",
+        "en": "Utility Software B"
+      },
+      "desc": {
+        "fa": "کد لایسنس + دانلود",
+        "en": "License code + download"
+      },
+      "price": 24.0,
+      "image": null
+    }
+  ]
+}
