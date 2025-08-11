@@ -1,0 +1,375 @@
+<!DOCTYPE html><html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>فروشگاه شیک — HTML Only</title>
+  <style>
+    :root{
+      --bg: #0b0c10;
+      --card: #111217;
+      --muted: #9aa0aa;
+      --text: #e6e8eb;
+      --brand: #7c5cff;
+      --accent: #22c55e;
+      --danger: #ef4444;
+      --border: #1e2027;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#fafafa; --card:#ffffff; --text:#0f172a; --muted:#6b7280; --border:#eef0f3; --shadow:0 12px 24px rgba(2,6,23,.06); }
+    }
+    *{ box-sizing: border-box }
+    html,body{ height:100% }
+    body{ margin:0; overflow-x:hidden; background:radial-gradient(1200px 600px at 80% -10%, rgba(124,92,255,.12), transparent 50%), var(--bg); color:var(--text); font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Vazirmatn", sans-serif }
+    a{ color:inherit }/* Layout */
+.container{ max-width: 1100px; margin: 0 auto; padding: 20px; }
+header{ position: sticky; top:0; z-index:50; backdrop-filter: saturate(140%) blur(6px); background: color-mix(in oklab, var(--bg) 90%, transparent); border-bottom: 1px solid var(--border) }
+.navbar{ display:flex; justify-content: space-between; align-items: center; gap:12px; padding: 14px 0 }
+.brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px }
+.logo{ width:34px; height:34px; display:grid; place-items:center; border-radius:10px; background: linear-gradient(135deg,#7c5cff, #5ac8fa); color:white; box-shadow: var(--shadow) }
+.toolbar{ display:flex; gap:8px; align-items:center }
+
+/* Controls */
+.chip{ border:1px solid var(--border); background:var(--card); padding:8px 12px; border-radius:999px; cursor:pointer; transition: .2s transform, .2s background; }
+.chip.active{ background: color-mix(in oklab, var(--brand) 22%, var(--card)); border-color: color-mix(in oklab, var(--brand) 45%, var(--border)); }
+.btn{ border:1px solid var(--border); background:var(--card); color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer; transition:.2s transform; box-shadow: var(--shadow) }
+.btn:hover{ transform: translateY(-1px) }
+.btn.primary{ background:linear-gradient(135deg, #7c5cff, #5ac8fa); color:#fff; border-color: transparent }
+.btn.ghost{ background:transparent }
+
+.search{ display:flex; gap:8px; align-items:center; border:1px solid var(--border); background:var(--card); border-radius:14px; padding:10px 12px; }
+.search input{ border:0; outline:0; background:transparent; color:var(--text); width:100% }
+
+/* Grid */
+.grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; }
+.col-12{ grid-column: span 12 }
+.col-8{ grid-column: span 8 }
+.col-4{ grid-column: span 4 }
+.col-3{ grid-column: span 3 }
+.col-6{ grid-column: span 6 }
+@media (max-width: 980px){ .col-8{ grid-column: span 12 } .col-4{ grid-column: span 12 } .col-3{ grid-column: span 6 } }
+@media (max-width: 640px){ .col-3{ grid-column: span 12 } }
+
+@media (max-width: 640px){
+  .media{ height:140px; }
+}
+
+
+
+/* Better responsive grid for products */
+#grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap:14px;
+}
+@media (max-width: 420px){
+  #grid{ grid-template-columns: 1fr; }
+}
+
+/* Cards */
+.card{ background: var(--card); border:1px solid var(--border); border-radius:18px; overflow:hidden; box-shadow: var(--shadow); display:flex; flex-direction:column }
+.media{ height: 170px; background: linear-gradient(120deg, rgba(124,92,255,.25), rgba(90,200,250,.25)); display:grid; place-items:center; position:relative }
+.media span{ font-weight:700; opacity:.9 }
+.content{ padding:14px }
+.muted{ color: var(--muted) }
+.row{ display:flex; align-items:center; justify-content: space-between; gap:10px }
+
+/* Cart Drawer */
+.cart-fab{ position: fixed; bottom:20px; inset-inline-end: 20px; z-index:60 }
+.fab{ background:linear-gradient(135deg, #7c5cff, #5ac8fa); color:#fff; border:0; border-radius:999px; padding:14px 18px; display:flex; align-items:center; gap:8px; font-weight:700; box-shadow: var(--shadow); cursor:pointer }
+.fab .count{ background:#fff; color:#111; font-weight:800; border-radius:999px; padding:2px 8px }
+
+.drawer{ position: fixed; top:0; inset-inline-end:0; width:min(420px, 90%); height:100%; background: var(--card); border-inline-start:1px solid var(--border); box-shadow: var(--shadow); transform: translateX(110%); transition: .3s transform, .2s opacity; z-index:70; display:flex; flex-direction:column; opacity:0; pointer-events:none }
+.drawer.open{ transform: translateX(0); opacity:1; pointer-events:auto }
+.drawer header{ padding:16px; border-bottom:1px solid var(--border) }
+.drawer main{ padding:14px; overflow:auto; flex:1; display:flex; flex-direction:column; gap:12px }
+.drawer footer{ padding:14px; border-top:1px solid var(--border); display:grid; gap:8px }
+
+.ci{ display:grid; grid-template-columns: 56px 1fr auto; gap:10px; align-items:center; border:1px solid var(--border); border-radius:14px; padding:8px }
+.thumb{ width:56px; height:56px; border-radius:10px; background:linear-gradient(135deg,#7c5cff22,#5ac8fa22) }
+.qty{ display:flex; gap:6px; align-items:center }
+.iconbtn{ width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer }
+
+/* Modal */
+.modal{ position: fixed; inset:0; background: rgba(0,0,0,.45); display:none; place-items:center; z-index:80 }
+.modal.show{ display:grid }
+.modal .box{ width:min(520px, 92%); background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; box-shadow: var(--shadow) }
+
+/* Section head */
+.section{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content: space-between; margin: 14px 0 }
+.chips{ display:flex; gap:8px; flex-wrap:wrap }
+
+footer{ color:var(--muted); border-top:1px solid var(--border); padding:18px 0; margin-top:30px }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container navbar">
+      <div class="brand">
+        <div class="logo">🛍️</div>
+        <div id="brand">فروشگاه شیک</div>
+      </div>
+      <div class="toolbar">
+        <button class="btn ghost" id="lang">EN</button>
+        <button class="btn ghost" id="theme">☾</button>
+      </div>
+    </div>
+  </header>  <main class="container">
+    <div class="grid">
+      <div class="col-8">
+        <div class="section">
+          <div class="search" style="flex:1">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 21L16.65 16.65M19 11.5C19 15.6421 15.6421 19 11.5 19C7.35786 19 4 15.6421 4 11.5C4 7.35786 7.35786 4 11.5 4C15.6421 4 19 7.35786 19 11.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <input id="q" placeholder="جستجو در محصولات..." />
+          </div>
+          <div class="chips" id="chips"></div>
+        </div>
+        <div id="grid" class="grid"></div>
+      </div>
+      <div class="col-4">
+        <div class="card" style="padding:14px">
+          <h3 style="margin:6px 0" id="sideTitle">پرفروش‌ها</h3>
+          <p class="muted" id="sideNote">محبوب‌ترین محصولات این هفته</p>
+          <div id="topList" style="display:grid; gap:12px; margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+  </main>  <div class="cart-fab"><button class="fab" id="openCart">🧺 <span id="cartCount" class="count">0</span></button></div>  <aside class="drawer" id="drawer" aria-hidden="true">
+    <header class="row">
+      <strong id="cartTitle">سبد خرید</strong>
+      <button class="btn ghost" id="closeCart">✕</button>
+    </header>
+    <main id="cartItems"></main>
+    <footer>
+      <div class="row"><span class="muted" id="subtotalLabel">جمع کل</span><strong id="subtotal">0 USDT</strong></div>
+      <button class="btn primary" id="checkout">پرداخت رمزارزی</button>
+    </footer>
+  </aside>  <div class="modal" id="modal">
+    <div class="box">
+      <div class="row"><strong id="checkoutTitle">پرداخت رمزارزی</strong><button class="btn ghost" id="closeModal">✕</button></div>
+      <p class="muted" id="checkoutDesc">این نسخه‌ی HTML‑Only صرفاً نمایشی است. می‌توانیم در مرحله بعدی آن را به درگاه واقعی (Coinbase/BTCPay/NOWPayments) وصل کنیم.</p>
+      <div style="display:grid; gap:8px; border:1px dashed var(--border); padding:12px; border-radius:12px">
+        <div class="row"><span>USDT (TRC20)</span><button class="btn" id="copyAddr">کپی آدرس</button></div>
+        <code id="addr" style="user-select:all">TN6K...DemoAddress...9Yp</code>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="markPaid">شبیه‌سازی پرداخت ✔️</button>
+        <button class="btn ghost" id="later">بعداً</button>
+      </div>
+      <div id="dl" style="display:none; margin-top:12px">
+        <p>پرداخت تأیید شد! لینک دانلود محصول شما:</p>
+        <a class="btn primary" href="#" download id="dlLink">دانلود</a>
+      </div>
+    </div>
+  </div>  <footer>
+    <div class="container row">
+      <span class="muted" id="foot">ساخته‌شده با HTML/CSS/JS — آمادهٔ ارتقاء مرحله‌به‌مرحله ✨</span>
+      <span class="muted">© 2025</span>
+    </div>
+  </footer>  <script>
+    /* ====== Data (FA/EN) ====== */
+    let PRODUCTS = [
+      { id:'p1', cat:'ebook', title:{fa:'ای‌بوک حرفه‌ای A', en:'Pro E‑book A'}, desc:{fa:'PDF — 120 صفحه', en:'PDF — 120 pages'}, price: 12.90, sku:'E-001' },
+      { id:'p2', cat:'software', title:{fa:'نرم‌افزار کاربردی B', en:'Utility Software B'}, desc:{fa:'کد لایسنس + دانلود', en:'License code + download'}, price: 24.00, sku:'S-002' },
+      { id:'p3', cat:'art', title:{fa:'مجموعه گرافیکی C', en:'Graphic Pack C'}, desc:{fa:'PNG/SVG — 200 فایل', en:'PNG/SVG — 200 assets'}, price: 9.50, sku:'A-003' },
+      { id:'p4', cat:'ebook', title:{fa:'راهنمای تخصصی D', en:'Expert Guide D'}, desc:{fa:'EPUB + PDF', en:'EPUB + PDF'}, price: 14.75, sku:'E-004' },
+    ];
+    // ==== Dynamic Products Loader (from products.json if available) ====
+    async function loadProductsFromJSON(){
+      try{
+        const res = await fetch('products.json', { cache:'no-store' });
+        if(res.ok){
+          const data = await res.json();
+          if(Array.isArray(data.products)){
+            PRODUCTS = data.products.map(p => ({
+              id: p.id, cat: p.cat, sku: p.sku || '',
+              title: p.title || { fa:'', en:'' },
+              desc: p.desc || { fa:'', en:'' },
+              price: Number(p.price || 0),
+              image: p.image || null
+            }));
+          }
+        }
+      }catch(e){ /* ignore, fallback to built-in */ }
+    }
+
+    const CATS = [
+      { id:'all', fa:'همه', en:'All' },
+      { id:'ebook', fa:'ای‌بوک', en:'E‑books' },
+      { id:'software', fa:'نرم‌افزار', en:'Software' },
+      { id:'art', fa:'هنر', en:'Art' }
+    ];
+
+    /* ====== State ====== */
+    const $ = s=>document.querySelector(s);
+    const $$ = s=>Array.from(document.querySelectorAll(s));
+    let lang = (localStorage.getItem('lang')||'fa');
+    let theme = (localStorage.getItem('theme')||'auto');
+    let cart = JSON.parse(localStorage.getItem('cart')||'[]');
+    let cat = 'all';
+    let q = '';
+
+    /* ====== i18n ====== */
+    const T = {
+      fa: {
+        brand:'فروشگاه شیک', search:'جستجو در محصولات...', bestTitle:'پرفروش‌ها', bestNote:'محبوب‌ترین محصولات این هفته',
+        cart:'سبد خرید', subtotal:'جمع کل', pay:'پرداخت رمزارزی',
+        checkoutTitle:'پرداخت رمزارزی', checkoutDesc:'این نسخه‌ی HTML‑Only صرفاً نمایشی است. در مرحله بعدی می‌توانیم به درگاه واقعی وصل کنیم.',
+        copy:'کپی آدرس', simulate:'شبیه‌سازی پرداخت', later:'بعداً', confirmed:'پرداخت تأیید شد! لینک دانلود آماده است.', download:'دانلود', footer:'ساخته‌شده با HTML/CSS/JS — آمادهٔ ارتقاء مرحله‌به‌مرحله ✨', priceUnit:'USDT', add:'افزودن به سبد'
+      },
+      en: {
+        brand:'Elegant Store', search:'Search products…', bestTitle:'Top Sellers', bestNote:'This week’s most popular',
+        cart:'Cart', subtotal:'Subtotal', pay:'Crypto Checkout',
+        checkoutTitle:'Crypto Checkout', checkoutDesc:'This HTML‑only build is a demo. Next step we can wire a real gateway.',
+        copy:'Copy Address', simulate:'Simulate Payment', later:'Later', confirmed:'Payment confirmed! Download is ready.', download:'Download', footer:'Built with HTML/CSS/JS — Ready to enhance step‑by‑step ✨', priceUnit:'USDT', add:'Add to cart'
+      }
+    }
+
+    function L(k){ return T[lang][k] }
+
+    /* ====== Render ====== */
+    function applyLang(){
+      document.documentElement.lang = (lang==='fa'?'fa':'en');
+      document.documentElement.dir = (lang==='fa'?'rtl':'ltr');
+      $('#brand').textContent = L('brand');
+      $('#q').placeholder = L('search');
+      $('#sideTitle').textContent = L('bestTitle');
+      $('#sideNote').textContent = L('bestNote');
+      $('#cartTitle').textContent = L('cart');
+      $('#subtotalLabel').textContent = L('subtotal');
+      $('#checkout').textContent = L('pay');
+      $('#checkoutTitle').textContent = L('checkoutTitle');
+      $('#checkoutDesc').textContent = L('checkoutDesc');
+      $('#copyAddr').textContent = L('copy');
+      $('#markPaid').textContent = L('simulate');
+      $('#later').textContent = L('later');
+      $('#dlLink').textContent = L('download');
+      $('#foot').textContent = L('footer');
+      $('#lang').textContent = (lang==='fa'?'EN':'فا');
+      renderChips();
+      renderGrid();
+      renderTop();
+      saveState();
+    }
+
+    function priceFmt(v){
+      const s = new Intl.NumberFormat(lang==='fa'?'fa-IR':'en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }).format(v);
+      return `${s} ${L('priceUnit')}`;
+    }
+
+    function renderChips(){
+      const box = $('#chips');
+      box.innerHTML = CATS.map(c=>`<button class="chip ${cat===c.id?'active':''}" data-cat="${c.id}">${c[lang]}</button>`).join('');
+      $$('#chips .chip').forEach(el=> el.onclick = ()=>{ cat = el.dataset.cat; renderGrid(); renderTop(); });
+    }
+
+    function filtered(){
+      return PRODUCTS.filter(p => (cat==='all' || p.cat===cat) && (q==='' || p.title[lang].toLowerCase().includes(q) || p.desc[lang].toLowerCase().includes(q)) );
+    }
+
+    function renderGrid(){
+      const list = filtered();
+      const grid = $('#grid');
+      grid.classList.add('grid');
+      grid.innerHTML = list.map(p => `
+        <div class="col-3">
+          <article class="card">
+            <div class="media" style="${p.image?`background-image:url(${p.image}); background-size:cover; background-position:center;`:""}"><span>${p.image?"":p.cat.toUpperCase()}</span></div>
+            <div class="content">
+              <div class="row"><strong>${p.title[lang]}</strong><span class="muted">${priceFmt(p.price)}</span></div>
+              <p class="muted" style="margin:6px 0 10px">${p.desc[lang]}</p>
+              <div class="row">
+                <button class="btn" onclick="add('${p.id}')">${L('add')}</button>
+                <span class="muted">SKU ${p.sku}</span>
+              </div>
+            </div>
+          </article>
+        </div>`).join('');
+    }
+
+    function renderTop(){
+      const list = PRODUCTS.slice(0,3);
+      $('#topList').innerHTML = list.map(p=>`
+        <div class="row" style="border:1px solid var(--border); border-radius:12px; padding:8px">
+          <div class="thumb"></div>
+          <div style="flex:1">
+            <div class="row"><span>${p.title[lang]}</span><strong>${priceFmt(p.price)}</strong></div>
+            <div class="muted" style="font-size:12px">${p.desc[lang]}</div>
+          </div>
+          <button class="btn" onclick="add('${p.id}')">+</button>
+        </div>`).join('');
+    }
+
+    function renderCart(){
+      $('#cartItems').innerHTML = cart.length? cart.map(ci=>`
+        <div class="ci">
+          <div class="thumb"></div>
+          <div>
+            <div class="row"><strong>${ci.title[lang]}</strong><span class="muted">${priceFmt(ci.price)}</span></div>
+            <div class="muted" style="font-size:12px">${ci.desc[lang]}</div>
+          </div>
+          <div class="qty">
+            <button class="iconbtn" onclick="dec('${ci.id}')">−</button>
+            <strong>${ci.qty}</strong>
+            <button class="iconbtn" onclick="inc('${ci.id}')">+</button>
+          </div>
+        </div>`).join('') : `<p class="muted">${lang==='fa'?'سبد خالی است.':'Your cart is empty.'}</p>`;
+      const sub = cart.reduce((s,i)=> s + i.price*i.qty, 0);
+      $('#subtotal').textContent = priceFmt(sub);
+      $('#cartCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
+      saveState();
+    }
+
+    /* ====== Cart ops ====== */
+    function add(id){
+      const p = PRODUCTS.find(x=>x.id===id);
+      const i = cart.find(x=>x.id===id);
+      if(i) i.qty++; else cart.push({ ...p, qty:1 });
+      toast(lang==='fa'? 'به سبد اضافه شد' : 'Added to cart');
+      renderCart();
+      openDrawer();
+    }
+    function inc(id){ const i = cart.find(x=>x.id===id); if(i){ i.qty++; renderCart(); } }
+    function dec(id){ const i = cart.find(x=>x.id===id); if(!i) return; i.qty--; if(i.qty<=0) cart = cart.filter(x=>x.id!==id); renderCart(); }
+
+    function saveState(){ localStorage.setItem('cart', JSON.stringify(cart)); localStorage.setItem('lang', lang); localStorage.setItem('theme', theme); }
+
+    /* ====== Drawer & Modal ====== */
+    const drawer = $('#drawer');
+    const modal = $('#modal');
+    function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); }
+    function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+
+    $('#openCart').onclick = openDrawer;
+    $('#closeCart').onclick = closeDrawer;
+
+    $('#checkout').onclick = ()=>{ modal.classList.add('show'); };
+    $('#closeModal').onclick = ()=> modal.classList.remove('show');
+    $('#later').onclick = ()=> modal.classList.remove('show');
+
+    $('#copyAddr').onclick = ()=>{ navigator.clipboard.writeText($('#addr').textContent.trim()); toast(lang==='fa'?'کپی شد':'Copied'); };
+    $('#markPaid').onclick = ()=>{ $('#dl').style.display='block'; toast(lang==='fa'?'پرداخت تأیید شد (نمایشی)':'Payment confirmed (demo)'); };
+
+    /* ====== Search ====== */
+    $('#q').addEventListener('input', e=>{ q = (e.target.value||'').toLowerCase(); renderGrid(); });
+
+    /* ====== Theme ====== */
+    function applyTheme(){
+      if(theme==='dark') document.documentElement.style.setProperty('color-scheme','dark');
+      if(theme==='light') document.documentElement.style.setProperty('color-scheme','light');
+    }
+    $('#theme').onclick = ()=>{ theme = theme==='dark' ? 'light' : (theme==='light' ? 'auto' : 'dark'); applyTheme(); toast('Theme: '+theme); saveState(); };
+
+    /* ====== Lang toggle ====== */
+    $('#lang').onclick = ()=>{ lang = (lang==='fa'?'en':'fa'); applyLang(); renderCart(); };
+
+    /* ====== Toast ====== */
+    let toastTimer; const toastBox = document.createElement('div'); toastBox.style.position='fixed'; toastBox.style.insetInline='0'; toastBox.style.bottom='18px'; toastBox.style.display='grid'; toastBox.style.placeItems='center'; toastBox.style.zIndex='90'; document.body.appendChild(toastBox);
+    function toast(msg){ clearTimeout(toastTimer); toastBox.innerHTML = `<div style="background:var(--card); border:1px solid var(--border); color:var(--text); padding:10px 14px; border-radius:10px; box-shadow:var(--shadow)">${msg}</div>`; toastTimer = setTimeout(()=> toastBox.innerHTML='', 1600); }
+
+    /* ====== Boot ====== */
+    applyTheme();
+    loadProductsFromJSON().then(()=>{ applyLang(); renderCart(); closeDrawer(); });
+  </script></body>
+</html>
